@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portal Skills dashboard -->
+    <template id="test_template" name="Template 1">
+        <!-- Bootstrap4 is inside Odoo Core!! -->
+        <t t-call="website.layout">
+            <div class="wrap container">
+                <h1>Welcome to My Website!</h1>
+                <h4>This is the first template</h4>
+                <t t-esc="value1"/>
+                <br/>
+
+                <div class="my-4">
+                    <!-- Simple foreach that print a lists of strings -->
+                    <t t-foreach="list_test" t-as="elem">
+                        <t t-esc="elem"/>
+                        <br/>
+                    </t>
+                </div>
+
+                <div class="row my-4">
+                    <div class="col-md-12 my-4">
+                        <h4 class="text-center">t-esc VS t-raw</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <t t-esc="no_html"/>
+                    </div>
+                    <div class="col-md-6">
+                        <t t-raw="with_html"/>
+                    </div>
+                </div>
+
+                <!-- This t-call add here another template -->
+                <t t-call="website_test_tutorial.test_template_two"/>
+
+                <button class="btn btn-primary change-content my-2">Click Me!</button>
+                <div class="row container-moduli my-3">
+                    <!-- This t-call is the same of the code below -->
+                    <!-- <t t-call="website_test_tutorial.test_template_json_modules"/> -->
+                    <div class="col-md-12">
+                        <h4>Print an object with a foreach </h4>
+                    </div>
+                    <!-- Foreach that print model fields -->
+                    <t t-foreach="models" t-as="model">
+                        <div class="col-md-4 border border-dark rounded">
+                            <!-- With t-field it's possibile to access object's fields -->
+                            <h5 t-field="model.model"/>
+                            <div t-field="model.name"/>
+                        </div>
+                    </t>
+                    <!-- End of same code block -->
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="test_template_two" name="Template 2">
+        <h2 class="test-website-h2">This is a template t-call that call the Template Two</h2>
+    </template>
+
+    <template id="test_template_json_call" name="Template 2">
+        <h2>This template is loaded by an Async jsonRpc</h2>
+    </template>
+
+    <template id="test_template_json_modules">
+        <div class="col-md-12">
+            <h4>Print an object with a foreach </h4>
+        </div>
+        <t t-foreach="models" t-as="model">
+            <div class="col-md-4 border border-dark rounded">
+                <h5 t-field="model.model"/>
+                <div t-field="model.name"/>
+            </div>
+        </t>
+    </template>
+
+</odoo>

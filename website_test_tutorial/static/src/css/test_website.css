@@ -1,0 +1,13 @@
+/*
+* Copyright 2020 Dario Del Zozzo (www.ddzsoftware.com)
+* MIT License.
+*/
+
+/* Careful! This rule change all the h1 into frontend!*/
+h1 {
+    color: red;
+}
+
+h2.test-website-h2 {
+    color: green;
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Documentation's assets -->
+    <!-- https://www.odoo.com/documentation/12.0/reference/javascript_reference.html#assets-management -->
+    <template id="website_test_tutorial_assets" name="Website Test Tutorial assets" inherit_id="web.assets_frontend">
+        <xpath expr="link[last()]" position="after">
+            <!-- Load into assets_frontend my css -->
+            <link href="/website_test_tutorial/static/src/css/test_website.css" rel="stylesheet" type="text/css"/>
+        </xpath>
+        <xpath expr="script[last()]" position="after">
+            <!-- Load into assets_frontend my JS -->
+            <script type="text/javascript" src="/website_test_tutorial/static/src/js/test_website.js"/>
+        </xpath>
+    </template>
+</odoo>
