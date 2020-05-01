@@ -32,5 +32,7 @@ odoo.define('website_test_tutorial.test_website', function (require) {
             });
     });
 
-    return "Try to use a require('website_test_tutorial.test_website') in another javascript module"
+    return {
+        'message': "A message",
+    };
 });

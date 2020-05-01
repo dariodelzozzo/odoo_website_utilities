@@ -8,7 +8,7 @@
     'category': 'Tutorial',
     'website': 'https://www.ddzsoftware.com',
     'author': 'Dario Del Zozzo',
-    'license': 'MIT License',
+    'license': 'LGPL-3',
     'depends': [
         'portal',
         'web',
