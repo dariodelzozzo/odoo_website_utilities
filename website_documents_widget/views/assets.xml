@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="dms_backend_asset" name="DMS Backend Assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/document_management_system/static/src/css/document_management_system.css"/>
+        </xpath>
+    </template>
+
+    <template id="dms_assets_frontend" inherit_id="web.assets_frontend" name="Portal Assets" priority="15">
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" type="text/scss" href="/document_management_system/static/src/css/portal_document_management_system.css"/>
+        </xpath>
+        <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/document_management_system/static/src/js/portal_document.js"/>
+        </xpath>
+    </template>
+</odoo>

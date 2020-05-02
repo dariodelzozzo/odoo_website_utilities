@@ -10,6 +10,8 @@
         <xpath expr="script[last()]" position="after">
             <!-- Load into assets_frontend my JS -->
             <script type="text/javascript" src="/website_test_tutorial/static/src/js/test_website.js"/>
+            <!-- TODO uncomment this assets, restart your Odoo service with a Module Update and see what happens -->
+            <!--<script type="text/javascript" src="/website_test_tutorial/static/src/js/another_javascript_module.js"/> -->
         </xpath>
     </template>
 </odoo>

@@ -13,6 +13,8 @@
         'portal',
         'web',
         'website',
+        'sale',
+        'sale_management',
     ],
     'data': [
         'views/assets.xml',

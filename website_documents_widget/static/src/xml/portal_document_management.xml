@@ -1,0 +1,18 @@
+<templates id="template" xml:space="preserve">
+    <t t-name="website_documents_widget.website_documents_widget">
+        <h4>Documents - <span t-esc="widget.res_name"/></h4>
+        <div class="action-button-header">
+            <button type="button"
+                    class="btn btn-success btn-small js_create_document"
+                    t-att-data-res-model="widget.current_directory_model"
+                    t-att-data-res-id="widget.current_directory_id">
+                + Add
+            </button>
+        </div>
+        <div class="documents-container" t-att-root-object="widget.res_model">
+            <div class="alert alert-warning mt8" role="alert">
+                    There aren't documents.
+            </div>
+        </div>
+    </t>
+</templates>

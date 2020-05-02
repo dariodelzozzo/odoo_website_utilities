@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <!--
+        Container document template for frontend
+        :res-model string: current model
+        :res-id stringied int: id of the current object
+        :access-token string: access token for customer portal
+
+        Callable container by
+        <t t-call="website_document_widget.website_documents">
+            <t t-set="object" t-value="current_object"/>
+        </t>
+        Where current_object is the object rendered by template
+    -->
+    <template id="website_documents" name="Website Documents">
+        <div class="website_documents_div"
+             t-att-data-res-model="object._name"
+             t-att-data-res-name="object.name"
+             t-att-data-res-id="object.id"
+             t-att-data-access-token="accessToken"/>
+    </template>
+
+    <template id="documents_details" name="Website documents div content">
+        <!-- Content that will be loaded inside document-container -->
+        <!-- FIXME this button is commentend because generate bug for create
+              purpose of new attachments from website and may crash if the actual
+              urrent_dir get removed -->
+        <!--<button class="btn btn-small btn-primary js_navigate_directory_back"
+                t-att-data-current-directory="current_dir.id"
+                t-att-data-current-model="current_dir._name">
+            <i class="fa fa-arrow-left"/>
+        </button>-->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb website-documents-breadcrumb">
+                <t t-set="counter" t-value="len(breadcrumbs_list)"/>
+                <t t-foreach="breadcrumbs_list" t-as="list_item">
+                    <t t-if="counter > 1">
+                        <li class="breadcrumb-item">
+                            <a class="js_breadcrumbs_item_navigate" t-att-data-res-model="list_item[0]" t-att-data-res-id="list_item[1]">
+                                <t t-esc="list_item[2]"/>
+                            </a>
+                        </li>
+                    </t>
+                    <t t-else="">
+                        <li class="breadcrumb-item active">
+                            <t t-esc="list_item[2]"/>
+                        </li>
+                    </t>
+                    <t t-set="counter" t-value="counter - 1"/>
+                </t>
+            </ol>
+        </nav>
+        <div class="row">
+            <t t-if="documents_len == 0">
+                <div class="alert alert-warning mt8 col-sm-12" role="alert">
+                    There aren't documents.
+                </div>
+            </t>
+            <t t-foreach="documents" t-as="document">
+                <div class="col-md-3 clearfix">
+                    <div t-att-class="'doc-container-content document-type-' + document.type"
+                         t-att-data-doc-id="document.id"
+                         data-res-model="ir.attachment"
+                         t-att-data-parent-dir="document.parent_id"
+                         t-att-data-res-id="document.res_id"
+                         t-attf-data-download-url="/download/selected-file/#{slug(document)}">
+                        <button class="btn btn-danger btn-sm btn-remove-attachment">
+                            <i class="fa fa-trash"/>
+                        </button>
+
+                        <button class="btn btn-primary btn-sm btn-modify-attachment">
+                            <i class="fa fa-pencil"/>
+                        </button>
+
+                        <div class="document-image-content">
+                            <t t-set="webimage" t-value="image_pattern.match(document.mimetype)"/>
+                            <div t-if="document.type == 'url'" class="o_url_image fa fa-link fa-3x text-muted"/>
+                            <img t-elif="webimage" t-attf-src="/web/image/#{document.id}?field=thumbnail" width="100" height="100" alt="Document" class="o_attachment_image"/>
+                            <div t-elif="document.type == 'directory'" class="o_url_image fa fa-folder fa-3x text-muted"/>
+                            <div t-else="!webimage" class="o_image o_image_thumbnail" t-att-data-mimetype="document.mimetype"/>
+                        </div>
+                        <div class="document-box-content">
+                            <t t-if="document.datas_fname">
+                                <div t-field="document.datas_fname"/>
+                            </t>
+                            <t t-else="">
+                                <div t-field="document.name"/>
+                            </t>
+                            <t t-if="document.res_model_name">
+                                <strong><span t-field="document.res_model_name"/></strong>
+                                <t t-if="document.res_name">
+                                    <span t-att-title="document.res_name">: <span t-field="document.res_name"/></span>
+                                </t>
+                            </t>
+                            <t t-elif="document.type == 'url'">
+                                <span class="o_document_url"><i class="fa fa-globe"/> <span t-field="document.url"/></span>
+                            </t>
+                            <div t-field="document.create_date"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </template>
+
+    <!-- Modal CREATE -->
+    <template id="document_creation_modal" name="Document Management Frontend Creation">
+        <div role="dialog" id="modal_document_creation" class="modal fade" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <form id="document_creation" t-attf-action="/dms/modal/create/confirm" method="post" class="js_website_submit_form" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="res_model" t-att-value="res_model"/>
+                    <input type="hidden" name="res_id" t-att-value="res_id"/>
+                    <input type="hidden" name="current_url" t-att-value="current_url"/>
+                    <div class="modal-content">
+                        <header class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel"><strong>Create new Directory or File</strong></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+                        </header>
+                        <main class="modal-body">
+                            <div class="container">
+                                <!-- <t t-esc="res_model"/>
+                                <t t-esc="res_id"/> -->
+                                <!-- Type selection -->
+                                <div class="form-group">
+                                    <label for="document_create_type">Type</label>
+                                    <select name="type" class="form-control select-type-create" id="document_create_type" required="required">
+                                        <t t-foreach="types" t-as="type">
+                                            <option t-att-value="type[0]"><t t-esc="type[1]"/></option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <!-- Name -->
+                                <div class="form-group">
+                                    <label for="document_create_name">Document Name</label>
+                                    <input name="name" type="text" class="o_website_form_input form-control" id="document_create_name" placeholder="Document name" required="required"/>
+                                </div>
+                                <!-- File -->
+                                <div class="form-group file-group">
+                                    <label for="document_create_file">File</label>
+                                    <input name="binary" type="file" class="o_website_form_input form-control" id="document_create_file"/>
+                                </div>
+                                <!-- Url -->
+                                <div class="form-group url-group">
+                                    <label for="document_create_url">Url</label>
+                                    <input name="url" type="text" class="o_website_form_input form-control" id="document_create_url"/>
+                                </div>
+                            </div>
+                        </main>
+                        <footer class="modal-footer">
+                            <div class="float-right">
+                                <button type="submit" class="btn btn-success">Create</button>
+                                <button type="button" class="btn btn-danger js_goto_prev_view" data-dismiss="modal">Cancel Creation</button>
+                            </div>
+                        </footer>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </template>
+
+    <!-- Modal MODIFY -->
+    <template id="document_modify_modal" name="Document Management Frontend Modify">
+        <div role="dialog" id="modal_document_modify" class="modal fade" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <form id="document_modify" t-attf-action="/dms/modal/modify/confirm" method="post" class="js_website_submit_form" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="id" t-att-value="document.id"/>
+                    <input type="hidden" name="type" t-att-value="document.type"/>
+                    <div class="modal-content">
+                        <header class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel"><strong>Modify current directory or file</strong></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+                        </header>
+                        <main class="modal-body">
+                            <div class="container">
+                                <div class="form-group">
+                                    <label>Type</label>
+                                    <div t-field="document.type"/>
+                                </div>
+                                <!-- Name -->
+                                <div class="form-group">
+                                    <label for="document_create_name">Document Name</label>
+                                    <input name="name" type="text" class="o_website_form_input form-control" id="document_create_name" t-att-value="document.name" required="required"/>
+                                </div>
+                                <div class="modify-image-content">
+                                    <t t-set="webimage" t-value="image_pattern.match(document.mimetype)"/>
+                                    <div t-if="document.type == 'url'" class="o_url_image fa fa-link fa-3x text-muted"/>
+                                    <img t-elif="webimage" t-attf-src="/web/image/#{document.id}" width="300" height="auto" alt="Document" class="o_attachment_image img-fluid"/>
+                                    <div t-elif="document.type == 'directory'" class="o_url_image fa fa-folder fa-3x text-muted"/>
+                                    <div t-else="!webimage" class="o_image o_image_thumbnail" t-att-data-mimetype="document.mimetype"/>
+                                </div>
+                                <t t-if="document.type != 'directory'">
+                                    <!-- File -->
+                                    <t t-if="document.type == 'binary'">
+                                        <div class="form-group file-group">
+                                            <label for="document_create_file">File</label>
+                                            <input name="binary" type="file" class="o_website_form_input form-control" id="document_create_file"/>
+                                        </div>
+                                    </t>
+                                    <!-- Url -->
+                                    <t t-if="document.type == 'url'">
+                                        <div class="form-group url-group">
+                                            <label for="document_create_url">Url</label>
+                                            <input name="url" type="text" class="o_website_form_input form-control" id="document_create_url" t-att-value="document.url"/>
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+                        </main>
+                        <footer class="modal-footer">
+                            <div class="float-right">
+                                <button type="submit" class="btn btn-success">Modify</button>
+                                <button type="button" class="btn btn-danger js_goto_prev_view" data-dismiss="modal">Exit</button>
+                            </div>
+                        </footer>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </template>
+</odoo>

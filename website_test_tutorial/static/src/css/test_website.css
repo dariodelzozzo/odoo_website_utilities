@@ -4,7 +4,7 @@
 */
 
 /* Careful! This rule change all the h1 into frontend!*/
-h1 {
+h1.test-website-h1 {
     color: red;
 }
 

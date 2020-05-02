@@ -5,7 +5,7 @@
         <!-- Bootstrap4 is inside Odoo Core!! -->
         <t t-call="website.layout">
             <div class="wrap container">
-                <h1>Welcome to My Website!</h1>
+                <h1 class="test-website-h1">Welcome to My Website!</h1>
                 <h4>This is the first template</h4>
                 <t t-esc="value1"/>
                 <br/>
@@ -30,10 +30,28 @@
                     </div>
                 </div>
 
+                <div class="test-data-attribute my-4" data-test_uno="test1" data-test_due="test2" t-att-data-models="models.ids">
+                    <p>Check me into Console with $('.test-data-attribute').data();</p>
+                </div>
+
+                <!-- Create a sale order and try to print a report with the below buttons -->
+                <!-- This code will always print the first SO -->
+                <div class="print-test my-4">
+                    <h4> What's about reports? </h4>
+                    <p>if you don't see the button below try to generate a Sale Order</p>
+                    <t t-set="this_object" t-value="sale_order"/>
+                    <t t-set="report_id_string" t-value="'sale.action_report_saleorder'"/>
+                    <!-- Show links only if the object exists -->
+                    <t t-if="this_object">
+                        <a t-att-href="'/' + this_object._name + '/' + str(this_object.id) + '/' + report_id_string + '/pdf'" class="btn btn-primary">Download PDF</a>
+                        <a t-att-href="'/' + this_object._name + '/' + str(this_object.id) + '/' + report_id_string + '/pdf?view_pdf=true'" target="_blank" class="btn btn-secondary">View PDF</a>
+                    </t>
+                </div>
+
                 <!-- This t-call add here another template -->
                 <t t-call="website_test_tutorial.test_template_two"/>
 
-                <button class="btn btn-primary change-content my-2">Click Me!</button>
+                <button class="btn btn-primary change-content my-2" data-test_uno="test1" data-test_due="test2" t-att-data-models="models.ids">Click Me!</button>
                 <div class="row container-moduli my-3">
                     <!-- This t-call is the same of the code below -->
                     <!-- <t t-call="website_test_tutorial.test_template_json_modules"/> -->

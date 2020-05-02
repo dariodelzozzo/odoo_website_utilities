@@ -25,7 +25,7 @@ odoo.define('website_test_tutorial.test_website', function (require) {
                caller === 'simple' ? caller = 'models' : caller = 'simple';
                 //TODO: Change the caller value for trigger the error!
                 if (!('error' in response)){
-                    $('.container-moduli').html(response.template)
+                    $('.container-moduli').html(response.template);
                 } else {
                     alert(response.error);
                 }
